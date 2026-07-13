@@ -95,6 +95,24 @@ const App = () => {
     ? countriesStates[formData.country] || []
     : [];
 
+  const { month: dobMonth, day: dobDay, year: dobYear } = parseDob(formData.dob);
+  const daysInMonth = getDaysInMonth(dobMonth, dobYear);
+  const dayOptions = Array.from({ length: daysInMonth }, (_, index) => index + 1);
+
+  const handleDobChange = (part, value) => {
+    const currentDob = parseDob(formData.dob);
+    const updatedDob = { ...currentDob, [part]: value };
+
+    if (updatedDob.day && Number(updatedDob.day) > getDaysInMonth(updatedDob.month, updatedDob.year)) {
+      updatedDob.day = "";
+    }
+
+    setFormData({
+      ...formData,
+      dob: buildDob(updatedDob),
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
