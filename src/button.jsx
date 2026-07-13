@@ -4,4 +4,3 @@ function Quickstart() {
   );
 }
 
-export default Quickstart;
