@@ -62,6 +62,7 @@ const App = () => {
     e.preventDefault();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
     setSubmittedData(formData);
+    setFormData(initialFormData);
   };
 
   const handleEdit = () => {
