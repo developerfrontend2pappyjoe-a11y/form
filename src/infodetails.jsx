@@ -21,7 +21,7 @@ const InfoDetails = () => {
     <div className="page">
       <div className="page-header">
         <div>
-          <h2>Info</h2>
+          <h2>User Info</h2>
           <p className="page-subtitle">All submitted user records are shown below.</p>
         </div>
         <button type="button" className="btn-secondary" onClick={() => navigate("/")}>
