@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { countries, countriesStates } from "./data/countriesStates";
-
-const STORAGE_KEY = "userFormList";
+import { getSavedFormList, saveFormList } from "./utils/formStorage";
 
 const initialFormData = {
   firstName: "",
@@ -17,31 +17,20 @@ const initialFormData = {
   departments: [],
 };
 
-const getSavedFormList = () => {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) return parsed;
-      if (parsed) return [{ ...parsed, id: Date.now() }];
-    }
-
-    const legacySaved = localStorage.getItem("userFormData");
-    if (legacySaved) {
-      const parsed = JSON.parse(legacySaved);
-      if (parsed) return [{ ...parsed, id: Date.now() }];
-    }
-
-    return [];
-  } catch {
-    return [];
-  }
-};
-
 const App = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [formData, setFormData] = useState(initialFormData);
-  const [submittedList, setSubmittedList] = useState(() => getSavedFormList());
   const [editingId, setEditingId] = useState(null);
+
+  useEffect(() => {
+    if (location.state?.editEntry) {
+      const { id, ...formValues } = location.state.editEntry;
+      setFormData(formValues);
+      setEditingId(id);
+      navigate("/", { replace: true, state: null });
+    }
+  }, [location.state, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,61 +47,29 @@ const App = () => {
     ? countriesStates[formData.country] || []
     : [];
 
-  const handleCheckboxChange = (e) => {
-    const { value, checked } = e.target;
-    let updatedDepartments = [...formData.departments];
-
-    if (checked) {
-      updatedDepartments.push(value);
-    } else {
-      updatedDepartments = updatedDepartments.filter(dep => dep !== value);
-    }
-
-    setFormData({ ...formData, departments: updatedDepartments });
-  };
-
-  const saveToStorage = (list) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const submittedList = getSavedFormList();
     const entry = { ...formData, id: editingId || Date.now() };
     const updatedList = editingId
       ? submittedList.map((item) => (item.id === editingId ? entry : item))
       : [...submittedList, entry];
 
-    saveToStorage(updatedList);
-    setSubmittedList(updatedList);
+    saveFormList(updatedList);
     setFormData(initialFormData);
     setEditingId(null);
   };
 
-  const handleEdit = (id) => {
-    const entry = submittedList.find((item) => item.id === id);
-    if (!entry) return;
-
-    const { id: entryId, ...formValues } = entry;
-    setFormData(formValues);
-    setEditingId(entryId);
-  };
-
-  const handleDelete = (id) => {
-    const updatedList = submittedList.filter((item) => item.id !== id);
-    saveToStorage(updatedList);
-    setSubmittedList(updatedList);
-
-    if (editingId === id) {
-      setFormData(initialFormData);
-      setEditingId(null);
-    }
-  };
-
   const containerStyle = {
-    display: "flex",
-    gap: "40px",
     padding: "20px",
+  };
+
+  const headerStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px",
   };
 
   const rowStyle = {
@@ -130,150 +87,99 @@ const App = () => {
     flex: 1,
   };
 
-  const cardStyle = {
-    width: "100%",
-    padding: "20px",
-    border: "1px solid #ccc",
-    borderRadius: "10px",
-    boxShadow: "0 2px 8px rgba(56, 22, 119, 0.09)",
-    height: "fit-content",
-  };
-
-  const gridStyle = {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-    gap: "20px",
-    flex: 1,
-    alignContent: "start",
-  };
-
   return (
     <div style={containerStyle}>
-
-      {/* LEFT SIDE FORM (UNCHANGED) */}
-      <div style={{ width: "500px" }}>
+      <div style={headerStyle}>
         <h2>User Form</h2>
-        <form onSubmit={handleSubmit}>
-
-          <div style={rowStyle}>
-            <label style={labelStyle}>First Name *</label>
-            <input style={inputStyle} name="firstName" onChange={handleChange} value={formData.firstName} required />
-          </div>
-
-          <div style={rowStyle}>
-            <label style={labelStyle}>Last Name *</label>
-            <input style={inputStyle} name="lastName" onChange={handleChange} value={formData.lastName} required />
-          </div>
-
-          <div style={rowStyle}>
-            <label style={labelStyle}>Date of Birth *</label>
-            <input style={inputStyle} type="date" name="dob" onChange={handleChange} value={formData.dob} />
-          </div>
-
-          <div style={rowStyle}>
-            <label style={labelStyle}>Age *</label>
-            <input style={inputStyle} type="number" name="age" onChange={handleChange} value={formData.age} />
-          </div>
-
-          <div style={rowStyle}>
-            <label style={labelStyle}>Phone *</label>
-            <input style={inputStyle} name="phone" onChange={handleChange} value={formData.phone} required />
-          </div>
-
-          <div style={rowStyle}>
-            <label style={labelStyle}>Email</label>
-            <input style={inputStyle} name="email" onChange={handleChange} value={formData.email} required />
-          </div>
-
-          <div style={rowStyle}>
-            <label style={labelStyle}>Gender *</label>
-            <select style={inputStyle} name="gender" onChange={handleChange} value={formData.gender}>
-              <option value="">Select</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-          </div>
-
-          <div style={rowStyle}>
-            <label style={labelStyle}>Country</label>
-            <select
-              style={inputStyle}
-              name="country"
-              value={formData.country}
-              onChange={handleChange}
-            >
-              <option value="">Select Country</option>
-              {countries.map((country) => (
-                <option key={country} value={country}>
-                  {country}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div style={rowStyle}>
-            <label style={labelStyle}>State</label>
-            <select
-              style={inputStyle}
-              name="state"
-              value={formData.state}
-              onChange={handleChange}
-              disabled={!formData.country}
-            >
-              <option value="">
-                {formData.country ? "Select State" : "Select Country first"}
-              </option>
-              {availableStates.map((state) => (
-                <option key={state} value={state}>
-                  {state}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div style={rowStyle}>
-            <label style={labelStyle}>Address</label>
-            <textarea style={inputStyle} name="address" onChange={handleChange} value={formData.address}></textarea>
-          </div>
-
-        
-
-          <button type="submit">{editingId ? "Update" : "Submit"}</button>
-        </form>
+        <button type="button" onClick={() => navigate("/info-details")}>
+          Info Details
+        </button>
       </div>
 
-      {/* RIGHT SIDE GRID */}
-      {submittedList.length > 0 && (
-        <div style={gridStyle}>
-          {submittedList.map((entry) => (
-            <div
-              key={entry.id}
-              style={{
-                ...cardStyle,
-                border: editingId === entry.id ? "2px solid #381677" : cardStyle.border,
-              }}
-            >
-              <h3>User Details</h3>
-
-              <p><strong>First Name:</strong> {entry.firstName}</p>
-              <p><strong>Last Name:</strong> {entry.lastName}</p>
-              <p><strong>Phone:</strong> {entry.phone}</p>
-              <p><strong>Country:</strong> {entry.country}</p>
-              <p><strong>State:</strong> {entry.state}</p>
-
-              <div style={{ marginTop: "15px" }}>
-                <button onClick={() => handleEdit(entry.id)} style={{ marginRight: "10px" }}>
-                  Edit
-                </button>
-                <button onClick={() => handleDelete(entry.id)}>
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
+      <form onSubmit={handleSubmit} style={{ maxWidth: "500px" }}>
+        <div style={rowStyle}>
+          <label style={labelStyle}>First Name *</label>
+          <input style={inputStyle} name="firstName" onChange={handleChange} value={formData.firstName} required />
         </div>
-      )}
 
+        <div style={rowStyle}>
+          <label style={labelStyle}>Last Name *</label>
+          <input style={inputStyle} name="lastName" onChange={handleChange} value={formData.lastName} required />
+        </div>
+
+        <div style={rowStyle}>
+          <label style={labelStyle}>Date of Birth *</label>
+          <input style={inputStyle} type="date" name="dob" onChange={handleChange} value={formData.dob} />
+        </div>
+
+        <div style={rowStyle}>
+          <label style={labelStyle}>Age *</label>
+          <input style={inputStyle} type="number" name="age" onChange={handleChange} value={formData.age} />
+        </div>
+
+        <div style={rowStyle}>
+          <label style={labelStyle}>Phone *</label>
+          <input style={inputStyle} name="phone" onChange={handleChange} value={formData.phone} required />
+        </div>
+
+        <div style={rowStyle}>
+          <label style={labelStyle}>Email</label>
+          <input style={inputStyle} name="email" onChange={handleChange} value={formData.email} required />
+        </div>
+
+        <div style={rowStyle}>
+          <label style={labelStyle}>Gender *</label>
+          <select style={inputStyle} name="gender" onChange={handleChange} value={formData.gender}>
+            <option value="">Select</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+
+        <div style={rowStyle}>
+          <label style={labelStyle}>Country</label>
+          <select
+            style={inputStyle}
+            name="country"
+            value={formData.country}
+            onChange={handleChange}
+          >
+            <option value="">Select Country</option>
+            {countries.map((country) => (
+              <option key={country} value={country}>
+                {country}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div style={rowStyle}>
+          <label style={labelStyle}>State</label>
+          <select
+            style={inputStyle}
+            name="state"
+            value={formData.state}
+            onChange={handleChange}
+            disabled={!formData.country}
+          >
+            <option value="">
+              {formData.country ? "Select State" : "Select Country first"}
+            </option>
+            {availableStates.map((state) => (
+              <option key={state} value={state}>
+                {state}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div style={rowStyle}>
+          <label style={labelStyle}>Address</label>
+          <textarea style={inputStyle} name="address" onChange={handleChange} value={formData.address}></textarea>
+        </div>
+
+        <button type="submit">{editingId ? "Update" : "Submit"}</button>
+      </form>
     </div>
   );
 };
