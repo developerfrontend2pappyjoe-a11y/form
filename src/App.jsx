@@ -238,7 +238,7 @@ const App = () => {
 
         
 
-          <button type="submit">Submit</button>
+          <button type="submit">{editingId ? "Update" : "Submit"}</button>
         </form>
       </div>
 
