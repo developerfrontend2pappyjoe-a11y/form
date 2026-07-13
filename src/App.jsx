@@ -152,8 +152,63 @@ const App = () => {
           </div>
 
           <div className="form-row">
-            <label htmlFor="dob">Date of Birth *</label>
-            <input id="dob" type="date" name="dob" onChange={handleChange} value={formData.dob} />
+            <label>Date of Birth *</label>
+            <div className="dob-selects">
+              <div className="dob-field">
+                <label htmlFor="dobMonth">Month</label>
+                <select
+                  id="dobMonth"
+                  value={dobMonth}
+                  onChange={(e) => handleDobChange("month", e.target.value)}
+                  required
+                >
+                  <option value="">Select Month</option>
+                  {MONTHS.map((month) => (
+                    <option key={month.value} value={month.value}>
+                      {month.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="dob-field">
+                <label htmlFor="dobDay">Day</label>
+                <select
+                  id="dobDay"
+                  value={dobDay}
+                  onChange={(e) => handleDobChange("day", e.target.value)}
+                  required
+                  disabled={!dobMonth || !dobYear}
+                >
+                  <option value="">Select Day</option>
+                  {dayOptions.map((day) => {
+                    const dayValue = String(day).padStart(2, "0");
+                    return (
+                      <option key={dayValue} value={dayValue}>
+                        {day}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+
+              <div className="dob-field">
+                <label htmlFor="dobYear">Year</label>
+                <select
+                  id="dobYear"
+                  value={dobYear}
+                  onChange={(e) => handleDobChange("year", e.target.value)}
+                  required
+                >
+                  <option value="">Select Year</option>
+                  {YEARS.map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
           </div>
 
           <div className="form-row">

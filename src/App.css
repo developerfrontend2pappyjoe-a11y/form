@@ -140,4 +140,8 @@
   .form-card {
     padding: 1.25rem;
   }
+
+  .dob-selects {
+    grid-template-columns: 1fr;
+  }
 }
