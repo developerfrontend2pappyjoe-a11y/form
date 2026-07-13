@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { countries, countriesStates } from "./data/countriesStates";
 
-const STORAGE_KEY = "userFormData";
+const STORAGE_KEY = "userFormList";
 
 const initialFormData = {
   firstName: "",
@@ -17,18 +17,31 @@ const initialFormData = {
   departments: [],
 };
 
-const getSavedFormData = () => {
+const getSavedFormList = () => {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : null;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) return parsed;
+      if (parsed) return [{ ...parsed, id: Date.now() }];
+    }
+
+    const legacySaved = localStorage.getItem("userFormData");
+    if (legacySaved) {
+      const parsed = JSON.parse(legacySaved);
+      if (parsed) return [{ ...parsed, id: Date.now() }];
+    }
+
+    return [];
   } catch {
-    return null;
+    return [];
   }
 };
 
 const App = () => {
   const [formData, setFormData] = useState(initialFormData);
-  const [submittedData, setSubmittedData] = useState(() => getSavedFormData());
+  const [submittedList, setSubmittedList] = useState(() => getSavedFormList());
+  const [editingId, setEditingId] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
