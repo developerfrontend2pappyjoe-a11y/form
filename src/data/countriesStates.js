@@ -1,0 +1,51 @@
+export const countriesStates = {
+  India: [
+    "Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Gujarat",
+    "Karnataka",
+    "Kerala",
+    "Maharashtra",
+    "Rajasthan",
+    "Tamil Nadu",
+    "Uttar Pradesh",
+    "West Bengal",
+  ],
+  "United States": [
+    "California",
+    "Florida",
+    "Georgia",
+    "Illinois",
+    "New York",
+    "Ohio",
+    "Pennsylvania",
+    "Texas",
+    "Washington",
+  ],
+  Canada: [
+    "Alberta",
+    "British Columbia",
+    "Manitoba",
+    "Ontario",
+    "Quebec",
+    "Saskatchewan",
+  ],
+  "United Kingdom": [
+    "England",
+    "Northern Ireland",
+    "Scotland",
+    "Wales",
+  ],
+  Australia: [
+    "New South Wales",
+    "Queensland",
+    "South Australia",
+    "Tasmania",
+    "Victoria",
+    "Western Australia",
+  ],
+};
+
+export const countries = Object.keys(countriesStates);
