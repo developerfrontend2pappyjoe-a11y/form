@@ -71,21 +71,42 @@ const App = () => {
     setFormData({ ...formData, departments: updatedDepartments });
   };
 
+  const saveToStorage = (list) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-    setSubmittedData(formData);
+
+    const entry = { ...formData, id: editingId || Date.now() };
+    const updatedList = editingId
+      ? submittedList.map((item) => (item.id === editingId ? entry : item))
+      : [...submittedList, entry];
+
+    saveToStorage(updatedList);
+    setSubmittedList(updatedList);
     setFormData(initialFormData);
+    setEditingId(null);
   };
 
-  const handleEdit = () => {
-    setFormData(submittedData); // load back into form
-    setSubmittedData(null);
+  const handleEdit = (id) => {
+    const entry = submittedList.find((item) => item.id === id);
+    if (!entry) return;
+
+    const { id: entryId, ...formValues } = entry;
+    setFormData(formValues);
+    setEditingId(entryId);
   };
 
-  const handleDelete = () => {
-    localStorage.removeItem(STORAGE_KEY);
-    setSubmittedData(null);
+  const handleDelete = (id) => {
+    const updatedList = submittedList.filter((item) => item.id !== id);
+    saveToStorage(updatedList);
+    setSubmittedList(updatedList);
+
+    if (editingId === id) {
+      setFormData(initialFormData);
+      setEditingId(null);
+    }
   };
 
   const containerStyle = {
