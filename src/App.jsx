@@ -100,7 +100,7 @@ const App = () => {
     padding: "20px",
     border: "1px solid #ccc",
     borderRadius: "10px",
-    boxShadow: "0 2px 8px rgba(95, 120, 246, 0.1)",
+    boxShadow: "0 2px 8px rgba(56, 22, 119, 0.09)",
     height: "fit-content",
   };
 
