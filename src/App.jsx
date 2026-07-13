@@ -131,12 +131,20 @@ const App = () => {
   };
 
   const cardStyle = {
-    width: "300px",
+    width: "100%",
     padding: "20px",
     border: "1px solid #ccc",
     borderRadius: "10px",
     boxShadow: "0 2px 8px rgba(56, 22, 119, 0.09)",
     height: "fit-content",
+  };
+
+  const gridStyle = {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+    gap: "20px",
+    flex: 1,
+    alignContent: "start",
   };
 
   return (
