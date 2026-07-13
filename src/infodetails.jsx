@@ -1,22 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getSavedFormList, saveFormList } from "./utils/formStorage";
-
-const cardStyle = {
-  width: "100%",
-  padding: "20px",
-  border: "1px solid #ccc",
-  borderRadius: "10px",
-  boxShadow: "0 2px 8px rgba(56, 22, 119, 0.09)",
-  height: "fit-content",
-};
-
-const gridStyle = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-  gap: "20px",
-  padding: "20px",
-};
+import "./App.css";
 
 const InfoDetails = () => {
   const navigate = useNavigate();
@@ -33,18 +18,25 @@ const InfoDetails = () => {
   };
 
   return (
-    <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 20px 0" }}>
-        <h2>Info Details</h2>
-        <button onClick={() => navigate("/")}>Back to Form</button>
+    <div className="page">
+      <div className="page-header">
+        <div>
+          <h2>Info Details</h2>
+          <p className="page-subtitle">All submitted user records are shown below.</p>
+        </div>
+        <button type="button" className="btn-secondary" onClick={() => navigate("/")}>
+          Back to Form
+        </button>
       </div>
 
       {submittedList.length === 0 ? (
-        <p style={{ padding: "20px" }}>No submitted details yet. Go back and submit the form.</p>
+        <div className="empty-state">
+          No submitted details yet. Go back and submit the form.
+        </div>
       ) : (
-        <div style={gridStyle}>
+        <div className="info-grid">
           {submittedList.map((entry) => (
-            <div key={entry.id} style={cardStyle}>
+            <div key={entry.id} className="info-card">
               <h3>User Details</h3>
 
               <p><strong>First Name:</strong> {entry.firstName}</p>
@@ -56,11 +48,11 @@ const InfoDetails = () => {
               <p><strong>State:</strong> {entry.state}</p>
               <p><strong>Address:</strong> {entry.address}</p>
 
-              <div style={{ marginTop: "15px" }}>
-                <button onClick={() => handleEdit(entry)} style={{ marginRight: "10px" }}>
+              <div className="card-actions">
+                <button type="button" className="btn-secondary" onClick={() => handleEdit(entry)}>
                   Edit
                 </button>
-                <button onClick={() => handleDelete(entry.id)}>
+                <button type="button" className="btn-danger" onClick={() => handleDelete(entry.id)}>
                   Delete
                 </button>
               </div>
