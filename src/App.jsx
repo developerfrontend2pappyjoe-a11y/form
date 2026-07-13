@@ -242,25 +242,35 @@ const App = () => {
         </form>
       </div>
 
-      {/* RIGHT SIDE CARD */}
-      {submittedData && (
-        <div style={cardStyle}>
-          <h3>User Details</h3>
+      {/* RIGHT SIDE GRID */}
+      {submittedList.length > 0 && (
+        <div style={gridStyle}>
+          {submittedList.map((entry) => (
+            <div
+              key={entry.id}
+              style={{
+                ...cardStyle,
+                border: editingId === entry.id ? "2px solid #381677" : cardStyle.border,
+              }}
+            >
+              <h3>User Details</h3>
 
-          <p><strong>First Name:</strong> {submittedData.firstName}</p>
-          <p><strong>Last Name:</strong> {submittedData.lastName}</p>
-          <p><strong>Phone:</strong> {submittedData.phone}</p>
-          <p><strong>Country:</strong> {submittedData.country}</p>
-          <p><strong>State:</strong> {submittedData.state}</p>
+              <p><strong>First Name:</strong> {entry.firstName}</p>
+              <p><strong>Last Name:</strong> {entry.lastName}</p>
+              <p><strong>Phone:</strong> {entry.phone}</p>
+              <p><strong>Country:</strong> {entry.country}</p>
+              <p><strong>State:</strong> {entry.state}</p>
 
-          <div style={{ marginTop: "15px" }}>
-            <button onClick={handleEdit} style={{ marginRight: "10px" }}>
-              Edit
-            </button>
-            <button onClick={handleDelete}>
-              Delete
-            </button>
-          </div>
+              <div style={{ marginTop: "15px" }}>
+                <button onClick={() => handleEdit(entry.id)} style={{ marginRight: "10px" }}>
+                  Edit
+                </button>
+                <button onClick={() => handleDelete(entry.id)}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
