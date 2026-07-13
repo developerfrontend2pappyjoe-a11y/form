@@ -66,7 +66,7 @@ const App = () => {
     <div className="page">
       <div className="page-header">
         <div>
-          <h2>application Form</h2>
+          <h2>applicatioForm</h2>
           <p className="page-subtitle">Fill in your details and submit to save them.</p>
         </div>
         <button type="button" className="btn-secondary" onClick={() => navigate("/info-details")}>
