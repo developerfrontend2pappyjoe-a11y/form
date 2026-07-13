@@ -37,24 +37,6 @@
   margin-bottom: 1.25rem;
 }
 
-.dob-selects {
-  display: grid;
-  grid-template-columns: 1.4fr 0.8fr 1fr;
-  gap: 0.75rem;
-}
-
-.dob-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.dob-field label {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
 .form-actions {
   display: flex;
   gap: 0.75rem;
@@ -139,9 +121,5 @@
 
   .form-card {
     padding: 1.25rem;
-  }
-
-  .dob-selects {
-    grid-template-columns: 1fr;
   }
 }

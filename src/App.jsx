@@ -18,53 +18,6 @@ const initialFormData = {
   departments: [],
 };
 
-const MONTHS = [
-  { value: "01", label: "January" },
-  { value: "02", label: "February" },
-  { value: "03", label: "March" },
-  { value: "04", label: "April" },
-  { value: "05", label: "May" },
-  { value: "06", label: "June" },
-  { value: "07", label: "July" },
-  { value: "08", label: "August" },
-  { value: "09", label: "September" },
-  { value: "10", label: "October" },
-  { value: "11", label: "November" },
-  { value: "12", label: "December" },
-];
-
-const currentYear = new Date().getFullYear();
-const YEARS = Array.from({ length: currentYear - 1900 + 1 }, (_, index) => currentYear - index);
-
-const parseDob = (dob) => {
-  if (!dob) {
-    return { month: "", day: "", year: "" };
-  }
-
-  const [year, month, day] = dob.split("-");
-  return {
-    month: month || "",
-    day: day || "",
-    year: year || "",
-  };
-};
-
-const getDaysInMonth = (month, year) => {
-  if (!month || !year) {
-    return 31;
-  }
-
-  return new Date(Number(year), Number(month), 0).getDate();
-};
-
-const buildDob = ({ month, day, year }) => {
-  if (!month || !day || !year) {
-    return "";
-  }
-
-  return `${year}-${month}-${day}`;
-};
-
 const App = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -94,24 +47,6 @@ const App = () => {
   const availableStates = formData.country
     ? countriesStates[formData.country] || []
     : [];
-
-  const { month: dobMonth, day: dobDay, year: dobYear } = parseDob(formData.dob);
-  const daysInMonth = getDaysInMonth(dobMonth, dobYear);
-  const dayOptions = Array.from({ length: daysInMonth }, (_, index) => index + 1);
-
-  const handleDobChange = (part, value) => {
-    const currentDob = parseDob(formData.dob);
-    const updatedDob = { ...currentDob, [part]: value };
-
-    if (updatedDob.day && Number(updatedDob.day) > getDaysInMonth(updatedDob.month, updatedDob.year)) {
-      updatedDob.day = "";
-    }
-
-    setFormData({
-      ...formData,
-      dob: buildDob(updatedDob),
-    });
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -152,63 +87,8 @@ const App = () => {
           </div>
 
           <div className="form-row">
-            <label>Date of Birth *</label>
-            <div className="dob-selects">
-              <div className="dob-field">
-                <label htmlFor="dobMonth">Month</label>
-                <select
-                  id="dobMonth"
-                  value={dobMonth}
-                  onChange={(e) => handleDobChange("month", e.target.value)}
-                  required
-                >
-                  <option value="">Select Month</option>
-                  {MONTHS.map((month) => (
-                    <option key={month.value} value={month.value}>
-                      {month.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="dob-field">
-                <label htmlFor="dobDay">Day</label>
-                <select
-                  id="dobDay"
-                  value={dobDay}
-                  onChange={(e) => handleDobChange("day", e.target.value)}
-                  required
-                  disabled={!dobMonth || !dobYear}
-                >
-                  <option value="">Select Day</option>
-                  {dayOptions.map((day) => {
-                    const dayValue = String(day).padStart(2, "0");
-                    return (
-                      <option key={dayValue} value={dayValue}>
-                        {day}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-
-              <div className="dob-field">
-                <label htmlFor="dobYear">Year</label>
-                <select
-                  id="dobYear"
-                  value={dobYear}
-                  onChange={(e) => handleDobChange("year", e.target.value)}
-                  required
-                >
-                  <option value="">Select Year</option>
-                  {YEARS.map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+            <label htmlFor="dob">Date of Birth *</label>
+            <input id="dob" type="date" name="dob" onChange={handleChange} value={formData.dob} />
           </div>
 
           <div className="form-row">
