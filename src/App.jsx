@@ -69,9 +69,14 @@ const App = () => {
           <h2>application Form</h2>
           <p className="page-subtitle">Fill in your details and submit to save them.</p>
         </div>
-        <button type="button" className="btn-secondary" onClick={() => navigate("/info-details")}>
-          Info Details
-        </button>
+        <div style={{ display: "flex", gap: "0.75rem" }}>
+          <button type="button" className="btn-secondary" onClick={() => navigate("/button")}>
+            Button
+          </button>
+          <button type="button" className="btn-secondary" onClick={() => navigate("/info-details")}>
+            Info Details
+          </button>
+        </div>
       </div>
 
       <div className="form-card">
