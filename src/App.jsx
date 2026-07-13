@@ -18,6 +18,53 @@ const initialFormData = {
   departments: [],
 };
 
+const MONTHS = [
+  { value: "01", label: "January" },
+  { value: "02", label: "February" },
+  { value: "03", label: "March" },
+  { value: "04", label: "April" },
+  { value: "05", label: "May" },
+  { value: "06", label: "June" },
+  { value: "07", label: "July" },
+  { value: "08", label: "August" },
+  { value: "09", label: "September" },
+  { value: "10", label: "October" },
+  { value: "11", label: "November" },
+  { value: "12", label: "December" },
+];
+
+const currentYear = new Date().getFullYear();
+const YEARS = Array.from({ length: currentYear - 1900 + 1 }, (_, index) => currentYear - index);
+
+const parseDob = (dob) => {
+  if (!dob) {
+    return { month: "", day: "", year: "" };
+  }
+
+  const [year, month, day] = dob.split("-");
+  return {
+    month: month || "",
+    day: day || "",
+    year: year || "",
+  };
+};
+
+const getDaysInMonth = (month, year) => {
+  if (!month || !year) {
+    return 31;
+  }
+
+  return new Date(Number(year), Number(month), 0).getDate();
+};
+
+const buildDob = ({ month, day, year }) => {
+  if (!month || !day || !year) {
+    return "";
+  }
+
+  return `${year}-${month}-${day}`;
+};
+
 const App = () => {
   const navigate = useNavigate();
   const location = useLocation();
